@@ -4,6 +4,7 @@ use borsh::BorshDeserialize;
 use crate::{
     program_context::*,
 };
+use crate::mint::*;
 
 mod mint;
 
@@ -21,9 +22,6 @@ pub mod idl_generator {
 
 #[derive(Accounts)]
 pub struct ProgramContext<'info> {
-    #[account(mut)]
-    pub meta_acc: Box<Account<'info, Metadata>>,
-
     #[account(mut)]
     pub mint: Box<Account<'info, Mint>>,
 }

@@ -26,8 +26,7 @@ url = "https://api.apr.dev"
 cluster = "devnet"
 #cluster = "localnet"
 # solana airdrop 2 5y4FAgHyy9NHBj1CE2zZTXDH4Bpip1KSMkYBNngJw6Ch
-wallet = "./id/id.json"
-#wallet = "~/.config/solana/id.json"
+wallet = "./id.json"
 
 [scripts]
-test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/redeem-test.ts"
+#test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/redeem-test.ts"

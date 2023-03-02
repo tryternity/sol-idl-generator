@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::my_struct::{Collection, CollectionDetails, Data, TokenStandard, Uses};
+use crate::data_struct::{Collection, CollectionDetails, Data, TokenStandard, Uses};
 
 #[account]
 #[derive(Default)]

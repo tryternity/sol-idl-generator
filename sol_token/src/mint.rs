@@ -3,10 +3,12 @@ use anchor_lang::prelude::*;
 #[account]
 #[derive(Default)]
 pub struct Mint {
+    // COption
     pub mint_authority: Option<Pubkey>,
     pub supply: u64,
     pub decimals: u8,
     pub is_initialized: bool,
+    // COption
     pub freeze_authority: Option<Pubkey>,
 }
 

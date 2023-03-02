@@ -5,9 +5,6 @@ use crate::{
     program_context::*,
 };
 
-mod my_struct;
-mod program_context;
-mod metadata;
 mod mint;
 
 //https://github.com/lhendre/metaplexDemo
@@ -21,3 +18,14 @@ pub mod idl_generator {
         Ok(())
     }
 }
+
+#[derive(Accounts)]
+pub struct ProgramContext<'info> {
+    #[account(mut)]
+    pub meta_acc: Box<Account<'info, Metadata>>,
+
+    #[account(mut)]
+    pub mint: Box<Account<'info, Mint>>,
+}
+
+impl<'info> ProgramContext<'info> {}

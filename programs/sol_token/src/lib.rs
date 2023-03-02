@@ -1,9 +1,6 @@
 use anchor_lang::prelude::*;
 use borsh::BorshDeserialize;
 
-use crate::{
-    program_context::*,
-};
 use crate::mint::*;
 
 mod mint;
@@ -12,7 +9,7 @@ mod mint;
 declare_id!("5oxtLp6fKgYuo6H6BVaiENk6z3adrkzgvEjhSWUe2MF5");
 
 #[program]
-pub mod idl_generator {
+pub mod spl_token {
     use super::*;
 
     pub fn hello_word(_ctx: Context<ProgramContext>) -> Result<()> {

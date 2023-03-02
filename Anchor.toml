@@ -4,28 +4,14 @@ anchor_version = "0.25.0"
 seeds = false
 skip-lint = false
 
-[programs.localnet]
-#mooar = "B3L2EPxtWeRPfaJXBWbMre5seE2omoEVEb5JMpbvCceK"
-mooar = "92X4MQTZBVb1LHJhZmaMSRzqYWWqcZfrQnmvZCuRyNxV"
 [programs.devnet]
-#mooar = "DXZTBirDQ11C5neWvX1NogmmHuQbYbDr87x8vQoZRVT3"
 mooar = "92X4MQTZBVb1LHJhZmaMSRzqYWWqcZfrQnmvZCuRyNxV"
-[programs.testnet]
-#mooar = "DXZTBirDQ11C5neWvX1NogmmHuQbYbDr87x8vQoZRVT3"
-mooar = "92X4MQTZBVb1LHJhZmaMSRzqYWWqcZfrQnmvZCuRyNxV"
-
-[programs.mainnet]
-#mooar = "DXZTBirDQ11C5neWvX1NogmmHuQbYbDr87x8vQoZRVT3"
-mooar = "B3L2EPxtWeRPfaJXBWbMre5seE2omoEVEb5JMpbvCceK"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-#cluster = "mainnet"
 cluster = "devnet"
-#cluster = "localnet"
-# solana airdrop 2 5y4FAgHyy9NHBj1CE2zZTXDH4Bpip1KSMkYBNngJw6Ch
 wallet = "./id.json"
 
 [scripts]

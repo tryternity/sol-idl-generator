@@ -1,0 +1,24 @@
+[package]
+name = "dooar"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "dooar"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+
+
+[dependencies]
+anchor-lang = "0.26.0"
+anchor-spl = "0.26.0"
+spl-token = { version = "3.5.0", features = ["no-entrypoint"] }
+mpl-token-metadata = { version = "1.11.1", features = ["no-entrypoint"] }
+md5 = "0.7.0"

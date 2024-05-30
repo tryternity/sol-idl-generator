@@ -1,0 +1,71 @@
+{
+  "version": "0.1.0",
+  "name": "dooar",
+  "instructions": [
+    {
+      "name": "swap",
+      "accounts": [
+        {
+          "name": "tokenSwap",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "userTransferAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "userSource",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "poolSource",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "poolDestination",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "userDestination",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "poolMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "poolFeeAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amountIn",
+          "type": "u64"
+        },
+        {
+          "name": "minimumAmountOut",
+          "type": "u64"
+        }
+      ]
+    }
+  ]
+}

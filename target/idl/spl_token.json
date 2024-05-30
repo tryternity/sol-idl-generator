@@ -1,0 +1,690 @@
+{
+  "version": "0.1.0",
+  "name": "spl_token",
+  "instructions": [
+    {
+      "name": "helloWord",
+      "accounts": [
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "metadata",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "p1",
+          "type": {
+            "defined": "TokenMetadataInstruction"
+          }
+        },
+        {
+          "name": "p2",
+          "type": {
+            "defined": "TokenGroupInstruction"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Mint",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mintAuthority",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "supply",
+            "type": "u64"
+          },
+          {
+            "name": "decimals",
+            "type": "u8"
+          },
+          {
+            "name": "isInitialized",
+            "type": "bool"
+          },
+          {
+            "name": "freezeAuthority",
+            "type": {
+              "option": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "publicKey"
+          },
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "delegate",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": "AccountState"
+            }
+          },
+          {
+            "name": "isNative",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "delegatedAmount",
+            "type": "u64"
+          },
+          {
+            "name": "closeAuthority",
+            "type": {
+              "option": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenMetadata",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "updateAuthority",
+            "docs": [
+              "The authority that can sign to update the metadata"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "mint",
+            "docs": [
+              "The associated mint, used to counter spoofing to be sure that metadata",
+              "belongs to a particular mint"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "name",
+            "docs": [
+              "The longer name of the token"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "docs": [
+              "The shortened symbol for the token"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "docs": [
+              "The URI pointing to richer metadata"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "additionalMetadata",
+            "docs": [
+              "Any additional metadata about the token as key-value pairs. The program",
+              "must avoid storing the same key twice."
+            ],
+            "type": {
+              "vec": {
+                "defined": "(String,String)"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "Initialize",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "docs": [
+              "Longer name of the token"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "docs": [
+              "Shortened symbol of the token"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "docs": [
+              "URI pointing to more metadata (image, video, etc.)"
+            ],
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateField",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "field",
+            "docs": [
+              "Field to update in the metadata"
+            ],
+            "type": {
+              "defined": "Field"
+            }
+          },
+          {
+            "name": "value",
+            "docs": [
+              "Value to write for the field"
+            ],
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RemoveKey",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "idempotent",
+            "docs": [
+              "If the idempotent flag is set to true, then the instruction will not",
+              "error if the key does not exist"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "key",
+            "docs": [
+              "Key to remove in the additional metadata portion"
+            ],
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateAuthority",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "newAuthority",
+            "docs": [
+              "New authority for the token metadata, or unset if `None`"
+            ],
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Emit",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "start",
+            "docs": [
+              "Start of range of data to emit"
+            ],
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "end",
+            "docs": [
+              "End of range of data to emit"
+            ],
+            "type": {
+              "option": "u64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeGroup",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "updateAuthority",
+            "docs": [
+              "Update authority for the group"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "maxSize",
+            "docs": [
+              "The maximum number of group members"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateGroupMaxSize",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "maxSize",
+            "docs": [
+              "New max size for the group"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateGroupAuthority",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "newAuthority",
+            "docs": [
+              "New authority for the group, or unset if `None`"
+            ],
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MetadataPointer",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Authority that can set the metadata address"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "metadataAddress",
+            "docs": [
+              "Account address that holds the metadata"
+            ],
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AccountState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Uninitialized"
+          },
+          {
+            "name": "Initialized"
+          },
+          {
+            "name": "Frozen"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransferFeeInstruction",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "InitializeTransferFeeConfig",
+            "fields": [
+              {
+                "name": "transferFeeConfigAuthority",
+                "docs": [
+                  "Pubkey that may update the fees"
+                ],
+                "type": {
+                  "option": "publicKey"
+                }
+              },
+              {
+                "name": "withdrawWithheldAuthority",
+                "docs": [
+                  "Withdraw instructions must be signed by this key"
+                ],
+                "type": {
+                  "option": "publicKey"
+                }
+              },
+              {
+                "name": "transferFeeBasisPoints",
+                "docs": [
+                  "Amount of transfer collected as fees, expressed as basis points of the",
+                  "transfer amount"
+                ],
+                "type": "u16"
+              },
+              {
+                "name": "maximumFee",
+                "docs": [
+                  "Maximum fee assessed on transfers"
+                ],
+                "type": "u64"
+              }
+            ]
+          },
+          {
+            "name": "TransferCheckedWithFee",
+            "fields": [
+              {
+                "name": "amount",
+                "docs": [
+                  "The amount of tokens to transfer."
+                ],
+                "type": "u64"
+              },
+              {
+                "name": "decimals",
+                "docs": [
+                  "Expected number of base 10 digits to the right of the decimal place."
+                ],
+                "type": "u8"
+              },
+              {
+                "name": "fee",
+                "docs": [
+                  "Expected fee assessed on this transfer, calculated off-chain based on",
+                  "the transfer_fee_basis_points and maximum_fee of the mint."
+                ],
+                "type": "u64"
+              }
+            ]
+          },
+          {
+            "name": "WithdrawWithheldTokensFromMint"
+          },
+          {
+            "name": "WithdrawWithheldTokensFromAccounts",
+            "fields": [
+              {
+                "name": "numTokenAccounts",
+                "docs": [
+                  "Number of token accounts harvested"
+                ],
+                "type": "u8"
+              }
+            ]
+          },
+          {
+            "name": "HarvestWithheldTokensToMint"
+          },
+          {
+            "name": "SetTransferFee",
+            "fields": [
+              {
+                "name": "transferFeeBasisPoints",
+                "docs": [
+                  "Amount of transfer collected as fees, expressed as basis points of the",
+                  "transfer amount"
+                ],
+                "type": "u16"
+              },
+              {
+                "name": "maximumFee",
+                "docs": [
+                  "Maximum fee assessed on transfers"
+                ],
+                "type": "u64"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExtensionType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Uninitialized"
+          },
+          {
+            "name": "TransferFeeConfig"
+          },
+          {
+            "name": "TransferFeeAmount"
+          },
+          {
+            "name": "MintCloseAuthority"
+          },
+          {
+            "name": "ConfidentialTransferMint"
+          },
+          {
+            "name": "ConfidentialTransferAccount"
+          },
+          {
+            "name": "DefaultAccountState"
+          },
+          {
+            "name": "ImmutableOwner"
+          },
+          {
+            "name": "MemoTransfer"
+          },
+          {
+            "name": "NonTransferable"
+          },
+          {
+            "name": "InterestBearingConfig"
+          },
+          {
+            "name": "CpiGuard"
+          },
+          {
+            "name": "PermanentDelegate"
+          },
+          {
+            "name": "NonTransferableAccount"
+          },
+          {
+            "name": "TransferHook"
+          },
+          {
+            "name": "TransferHookAccount"
+          },
+          {
+            "name": "ConfidentialTransferFeeConfig"
+          },
+          {
+            "name": "ConfidentialTransferFeeAmount"
+          },
+          {
+            "name": "MetadataPointer"
+          },
+          {
+            "name": "TokenMetadata"
+          },
+          {
+            "name": "GroupPointer"
+          },
+          {
+            "name": "VariableLenMintTest"
+          },
+          {
+            "name": "AccountPaddingTest"
+          },
+          {
+            "name": "MintPaddingTest"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenMetadataInstruction",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Initialize",
+            "fields": [
+              {
+                "defined": "Initialize"
+              }
+            ]
+          },
+          {
+            "name": "UpdateField",
+            "fields": [
+              {
+                "defined": "UpdateField"
+              }
+            ]
+          },
+          {
+            "name": "RemoveKey",
+            "fields": [
+              {
+                "defined": "RemoveKey"
+              }
+            ]
+          },
+          {
+            "name": "UpdateAuthority",
+            "fields": [
+              {
+                "defined": "UpdateAuthority"
+              }
+            ]
+          },
+          {
+            "name": "Emit",
+            "fields": [
+              {
+                "defined": "Emit"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Field",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Name"
+          },
+          {
+            "name": "Symbol"
+          },
+          {
+            "name": "Uri"
+          },
+          {
+            "name": "Key",
+            "fields": [
+              "string"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenGroupInstruction",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "InitializeGroup",
+            "fields": [
+              {
+                "defined": "InitializeGroup"
+              }
+            ]
+          },
+          {
+            "name": "UpdateGroupMaxSize",
+            "fields": [
+              {
+                "defined": "UpdateGroupMaxSize"
+              }
+            ]
+          },
+          {
+            "name": "UpdateGroupAuthority",
+            "fields": [
+              {
+                "defined": "UpdateGroupAuthority"
+              }
+            ]
+          },
+          {
+            "name": "InitializeMember"
+          }
+        ]
+      }
+    }
+  ]
+}

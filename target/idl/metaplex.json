@@ -1,0 +1,1822 @@
+{
+  "version": "0.1.0",
+  "name": "metaplex",
+  "instructions": [
+    {
+      "name": "helloWord",
+      "accounts": [
+        {
+          "name": "metaAcc",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Metadata",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "docs": [
+              "Account discriminator."
+            ],
+            "type": {
+              "defined": "Key"
+            }
+          },
+          {
+            "name": "updateAuthority",
+            "docs": [
+              "Address of the update authority."
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "mint",
+            "docs": [
+              "Address of the mint."
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "data",
+            "docs": [
+              "Asset data."
+            ],
+            "type": {
+              "defined": "Data"
+            }
+          },
+          {
+            "name": "primarySaleHappened",
+            "type": "bool"
+          },
+          {
+            "name": "isMutable",
+            "type": "bool"
+          },
+          {
+            "name": "editionNonce",
+            "docs": [
+              "nonce for easy calculation of editions, if present"
+            ],
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "tokenStandard",
+            "docs": [
+              "Since we cannot easily change Metadata, we add the new DataV2 fields here at the end."
+            ],
+            "type": {
+              "option": {
+                "defined": "TokenStandard"
+              }
+            }
+          },
+          {
+            "name": "collection",
+            "docs": [
+              "Collection"
+            ],
+            "type": {
+              "option": {
+                "defined": "Collection"
+              }
+            }
+          },
+          {
+            "name": "uses",
+            "docs": [
+              "Uses"
+            ],
+            "type": {
+              "option": {
+                "defined": "Uses"
+              }
+            }
+          },
+          {
+            "name": "collectionDetails",
+            "docs": [
+              "Collection Details"
+            ],
+            "type": {
+              "option": {
+                "defined": "CollectionDetails"
+              }
+            }
+          },
+          {
+            "name": "programmableConfig",
+            "docs": [
+              "Programmable Config"
+            ],
+            "type": {
+              "option": {
+                "defined": "ProgrammableConfig"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "UpdateMetadataAccountArgsV2",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "option": {
+                "defined": "DataV2"
+              }
+            }
+          },
+          {
+            "name": "updateAuthority",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "primarySaleHappened",
+            "type": {
+              "option": "bool"
+            }
+          },
+          {
+            "name": "isMutable",
+            "type": {
+              "option": "bool"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateMetadataAccountArgsV3",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "docs": [
+              "Note that unique metadatas are disabled for now."
+            ],
+            "type": {
+              "defined": "DataV2"
+            }
+          },
+          {
+            "name": "isMutable",
+            "docs": [
+              "Whether you want your metadata to be updateable in the future."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "collectionDetails",
+            "docs": [
+              "If this is a collection parent NFT."
+            ],
+            "type": {
+              "option": {
+                "defined": "CollectionDetails"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateMasterEditionArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "maxSupply",
+            "docs": [
+              "If set, means that no more than this number of editions can ever be minted. This is immutable."
+            ],
+            "type": {
+              "option": "u64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MintNewEditionFromMasterEditionViaTokenArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "edition",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ApproveUseAuthorityArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "numberOfUses",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UtilizeArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "numberOfUses",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Data",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "docs": [
+              "The name of the asset"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "docs": [
+              "The symbol for the asset"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "docs": [
+              "URI pointing to JSON representing the asset"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "sellerFeeBasisPoints",
+            "docs": [
+              "Royalty basis points that goes to creators in secondary sales (0-10000)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "creators",
+            "docs": [
+              "Array of creators, optional"
+            ],
+            "type": {
+              "option": {
+                "vec": {
+                  "defined": "Creator"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DataV2",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "docs": [
+              "The name of the asset"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "docs": [
+              "The symbol for the asset"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "docs": [
+              "URI pointing to JSON representing the asset"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "sellerFeeBasisPoints",
+            "docs": [
+              "Royalty basis points that goes to creators in secondary sales (0-10000)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "creators",
+            "docs": [
+              "Array of creators, optional"
+            ],
+            "type": {
+              "option": {
+                "vec": {
+                  "defined": "Creator"
+                }
+              }
+            }
+          },
+          {
+            "name": "collection",
+            "docs": [
+              "Collection"
+            ],
+            "type": {
+              "option": {
+                "defined": "Collection"
+              }
+            }
+          },
+          {
+            "name": "uses",
+            "docs": [
+              "Uses"
+            ],
+            "type": {
+              "option": {
+                "defined": "Uses"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Creator",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "address",
+            "type": "publicKey"
+          },
+          {
+            "name": "verified",
+            "type": "bool"
+          },
+          {
+            "name": "share",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Collection",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "verified",
+            "type": "bool"
+          },
+          {
+            "name": "key",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Uses",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "useMethod",
+            "type": "u8"
+          },
+          {
+            "name": "remaining",
+            "type": "u64"
+          },
+          {
+            "name": "total",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SetCollectionSizeArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "size",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransferOutOfEscrowArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AssetData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "docs": [
+              "The name of the asset."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "docs": [
+              "The symbol for the asset."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "docs": [
+              "URI pointing to JSON representing the asset."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "sellerFeeBasisPoints",
+            "docs": [
+              "Royalty basis points that goes to creators in secondary sales (0-10000)."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "creators",
+            "docs": [
+              "Array of creators."
+            ],
+            "type": {
+              "option": {
+                "vec": {
+                  "defined": "Creator"
+                }
+              }
+            }
+          },
+          {
+            "name": "primarySaleHappened",
+            "type": "bool"
+          },
+          {
+            "name": "isMutable",
+            "type": "bool"
+          },
+          {
+            "name": "tokenStandard",
+            "docs": [
+              "Type of the token."
+            ],
+            "type": {
+              "defined": "TokenStandard"
+            }
+          },
+          {
+            "name": "collection",
+            "docs": [
+              "Collection information."
+            ],
+            "type": {
+              "option": {
+                "defined": "Collection"
+              }
+            }
+          },
+          {
+            "name": "uses",
+            "docs": [
+              "Uses information."
+            ],
+            "type": {
+              "option": {
+                "defined": "Uses"
+              }
+            }
+          },
+          {
+            "name": "collectionDetails",
+            "docs": [
+              "Collection item details."
+            ],
+            "type": {
+              "option": {
+                "defined": "CollectionDetails"
+              }
+            }
+          },
+          {
+            "name": "ruleSet",
+            "docs": [
+              "Programmable rule set for the asset."
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuthorizationData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "payload",
+            "type": {
+              "defined": "Payload"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Payload",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "map",
+            "type": {
+              "defined": "HashMap<String,PayloadType>"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SeedsVec",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "seeds",
+            "docs": [
+              "The vector of derivation seeds."
+            ],
+            "type": {
+              "vec": "bytes"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProofInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "proof",
+            "docs": [
+              "The merkle proof."
+            ],
+            "type": {
+              "vec": {
+                "array": [
+                  "u8",
+                  32
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CollectionDetails",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "V1",
+            "fields": [
+              {
+                "name": "size",
+                "type": "u64"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenStandard",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "NonFungible"
+          },
+          {
+            "name": "FungibleAsset"
+          },
+          {
+            "name": "Fungible"
+          },
+          {
+            "name": "NonFungibleEdition"
+          },
+          {
+            "name": "ProgrammableNonFungible"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BurnArgs",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "V1",
+            "fields": [
+              {
+                "name": "amount",
+                "docs": [
+                  "The amount of the token to burn"
+                ],
+                "type": "u64"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateArgs",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "V1",
+            "fields": [
+              {
+                "name": "assetData",
+                "type": {
+                  "defined": "AssetData"
+                }
+              },
+              {
+                "name": "decimals",
+                "type": {
+                  "option": "u8"
+                }
+              },
+              {
+                "name": "printSupply",
+                "type": {
+                  "option": {
+                    "defined": "PrintSupply"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "PrintSupply",
+      "docs": [
+        "Represents the print supply of a non-fungible asset."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Zero"
+          },
+          {
+            "name": "Limited",
+            "fields": [
+              "u64"
+            ]
+          },
+          {
+            "name": "Unlimited"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MintArgs",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "V1",
+            "fields": [
+              {
+                "name": "amount",
+                "type": "u64"
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "PayloadType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pubkey",
+            "fields": [
+              "publicKey"
+            ]
+          },
+          {
+            "name": "Seeds",
+            "fields": [
+              {
+                "defined": "SeedsVec"
+              }
+            ]
+          },
+          {
+            "name": "MerkleProof",
+            "fields": [
+              {
+                "defined": "ProofInfo"
+              }
+            ]
+          },
+          {
+            "name": "Number",
+            "fields": [
+              "u64"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "DelegateArgs",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "CollectionV1",
+            "fields": [
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "SaleV1",
+            "fields": [
+              {
+                "name": "amount",
+                "type": "u64"
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "TransferV1",
+            "fields": [
+              {
+                "name": "amount",
+                "type": "u64"
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "DataV1",
+            "fields": [
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "UtilityV1",
+            "fields": [
+              {
+                "name": "amount",
+                "type": "u64"
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "StakingV1",
+            "fields": [
+              {
+                "name": "amount",
+                "type": "u64"
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "StandardV1",
+            "fields": [
+              {
+                "name": "amount",
+                "type": "u64"
+              }
+            ]
+          },
+          {
+            "name": "LockedTransferV1",
+            "fields": [
+              {
+                "name": "amount",
+                "type": "u64"
+              },
+              {
+                "name": "lockedAddress",
+                "docs": [
+                  "locked destination pubkey"
+                ],
+                "type": "publicKey"
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "ProgrammableConfigV1",
+            "fields": [
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "AuthorityItemV1",
+            "fields": [
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "DataItemV1",
+            "fields": [
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "CollectionItemV1",
+            "fields": [
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "ProgrammableConfigItemV1",
+            "fields": [
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "RevokeArgs",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "CollectionV1"
+          },
+          {
+            "name": "SaleV1"
+          },
+          {
+            "name": "TransferV1"
+          },
+          {
+            "name": "DataV1"
+          },
+          {
+            "name": "UtilityV1"
+          },
+          {
+            "name": "StakingV1"
+          },
+          {
+            "name": "StandardV1"
+          },
+          {
+            "name": "LockedTransferV1"
+          },
+          {
+            "name": "ProgrammableConfigV1"
+          },
+          {
+            "name": "MigrationV1"
+          },
+          {
+            "name": "AuthorityItemV1"
+          },
+          {
+            "name": "DataItemV1"
+          },
+          {
+            "name": "CollectionItemV1"
+          },
+          {
+            "name": "ProgrammableConfigItemV1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LockArgs",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "V1",
+            "fields": [
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnlockArgs",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "V1",
+            "fields": [
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "MigrateArgs",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "V1",
+            "fields": [
+              {
+                "name": "migrationType",
+                "type": {
+                  "defined": "MigrationType"
+                }
+              },
+              {
+                "name": "ruleSet",
+                "type": {
+                  "option": "publicKey"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "MigrationType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "CollectionV1"
+          },
+          {
+            "name": "ProgrammableV1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransferArgs",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "V1",
+            "fields": [
+              {
+                "name": "amount",
+                "type": "u64"
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateArgs",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "V1",
+            "fields": [
+              {
+                "name": "newUpdateAuthority",
+                "docs": [
+                  "The new update authority."
+                ],
+                "type": {
+                  "option": "publicKey"
+                }
+              },
+              {
+                "name": "data",
+                "docs": [
+                  "The metadata details."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "Data"
+                  }
+                }
+              },
+              {
+                "name": "primarySaleHappened",
+                "docs": [
+                  "Indicates whether the primary sale has happened or not (once set to `true`, it cannot be",
+                  "changed back)."
+                ],
+                "type": {
+                  "option": "bool"
+                }
+              },
+              {
+                "name": "isMutable",
+                "docs": [
+                  "changed back)."
+                ],
+                "type": {
+                  "option": "bool"
+                }
+              },
+              {
+                "name": "collection",
+                "docs": [
+                  "Collection information."
+                ],
+                "type": {
+                  "defined": "CollectionToggle"
+                }
+              },
+              {
+                "name": "collectionDetails",
+                "docs": [
+                  "Additional details of the collection."
+                ],
+                "type": {
+                  "defined": "CollectionDetailsToggle"
+                }
+              },
+              {
+                "name": "uses",
+                "docs": [
+                  "Uses information."
+                ],
+                "type": {
+                  "defined": "UsesToggle"
+                }
+              },
+              {
+                "name": "ruleSet",
+                "type": {
+                  "defined": "RuleSetToggle"
+                }
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "AsUpdateAuthorityV2",
+            "fields": [
+              {
+                "name": "newUpdateAuthority",
+                "docs": [
+                  "The new update authority."
+                ],
+                "type": {
+                  "option": "publicKey"
+                }
+              },
+              {
+                "name": "data",
+                "docs": [
+                  "The metadata details."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "Data"
+                  }
+                }
+              },
+              {
+                "name": "primarySaleHappened",
+                "docs": [
+                  "Indicates whether the primary sale has happened or not (once set to `true`, it cannot be",
+                  "changed back)."
+                ],
+                "type": {
+                  "option": "bool"
+                }
+              },
+              {
+                "name": "isMutable",
+                "docs": [
+                  "changed back)."
+                ],
+                "type": {
+                  "option": "bool"
+                }
+              },
+              {
+                "name": "collection",
+                "docs": [
+                  "Collection information."
+                ],
+                "type": {
+                  "defined": "CollectionToggle"
+                }
+              },
+              {
+                "name": "collectionDetails",
+                "docs": [
+                  "Additional details of the collection."
+                ],
+                "type": {
+                  "defined": "CollectionDetailsToggle"
+                }
+              },
+              {
+                "name": "uses",
+                "docs": [
+                  "Uses information."
+                ],
+                "type": {
+                  "defined": "UsesToggle"
+                }
+              },
+              {
+                "name": "ruleSet",
+                "type": {
+                  "defined": "RuleSetToggle"
+                }
+              },
+              {
+                "name": "tokenStandard",
+                "docs": [
+                  "Token standard."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "TokenStandard"
+                  }
+                }
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "AsAuthorityItemDelegateV2",
+            "fields": [
+              {
+                "name": "newUpdateAuthority",
+                "docs": [
+                  "The new update authority."
+                ],
+                "type": {
+                  "option": "publicKey"
+                }
+              },
+              {
+                "name": "primarySaleHappened",
+                "docs": [
+                  "Indicates whether the primary sale has happened or not (once set to `true`, it cannot be",
+                  "changed back)."
+                ],
+                "type": {
+                  "option": "bool"
+                }
+              },
+              {
+                "name": "isMutable",
+                "docs": [
+                  "changed back)."
+                ],
+                "type": {
+                  "option": "bool"
+                }
+              },
+              {
+                "name": "tokenStandard",
+                "docs": [
+                  "Token standard."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "TokenStandard"
+                  }
+                }
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "AsCollectionDelegateV2",
+            "fields": [
+              {
+                "name": "collection",
+                "docs": [
+                  "Collection information."
+                ],
+                "type": {
+                  "defined": "CollectionToggle"
+                }
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "AsDataDelegateV2",
+            "fields": [
+              {
+                "name": "data",
+                "docs": [
+                  "The metadata details."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "Data"
+                  }
+                }
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "AsProgrammableConfigDelegateV2",
+            "fields": [
+              {
+                "name": "ruleSet",
+                "type": {
+                  "defined": "RuleSetToggle"
+                }
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "AsDataItemDelegateV2",
+            "fields": [
+              {
+                "name": "data",
+                "docs": [
+                  "The metadata details."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "Data"
+                  }
+                }
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "AsCollectionItemDelegateV2",
+            "fields": [
+              {
+                "name": "collection",
+                "docs": [
+                  "Collection information."
+                ],
+                "type": {
+                  "defined": "CollectionToggle"
+                }
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "AsProgrammableConfigItemDelegateV2",
+            "fields": [
+              {
+                "name": "ruleSet",
+                "type": {
+                  "defined": "RuleSetToggle"
+                }
+              },
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "CollectionToggle",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Clear"
+          },
+          {
+            "name": "Set",
+            "fields": [
+              {
+                "defined": "Collection"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "CollectionDetailsToggle",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Clear"
+          },
+          {
+            "name": "Set",
+            "fields": [
+              {
+                "defined": "CollectionDetails"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "UsesToggle",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Clear"
+          },
+          {
+            "name": "Set",
+            "fields": [
+              {
+                "defined": "Uses"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "RuleSetToggle",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Clear"
+          },
+          {
+            "name": "Set",
+            "fields": [
+              "publicKey"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "UseArgs",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "V1",
+            "fields": [
+              {
+                "name": "authorizationData",
+                "docs": [
+                  "Required authorization data to validate the request."
+                ],
+                "type": {
+                  "option": {
+                    "defined": "AuthorizationData"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "VerificationArgs",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "CreatorV1"
+          },
+          {
+            "name": "CollectionV1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PrintSupply",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Zero"
+          },
+          {
+            "name": "Limited",
+            "fields": [
+              "u64"
+            ]
+          },
+          {
+            "name": "Unlimited"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProgrammableConfig",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "V1",
+            "fields": [
+              {
+                "name": "ruleSet",
+                "docs": [
+                  "Programmable authorization rules."
+                ],
+                "type": {
+                  "option": "publicKey"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Key",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Uninitialized"
+          },
+          {
+            "name": "EditionV1"
+          },
+          {
+            "name": "MasterEditionV1"
+          },
+          {
+            "name": "ReservationListV1"
+          },
+          {
+            "name": "MetadataV1"
+          },
+          {
+            "name": "ReservationListV2"
+          },
+          {
+            "name": "MasterEditionV2"
+          },
+          {
+            "name": "EditionMarker"
+          },
+          {
+            "name": "UseAuthorityRecord"
+          },
+          {
+            "name": "CollectionAuthorityRecord"
+          },
+          {
+            "name": "TokenOwnedEscrow"
+          },
+          {
+            "name": "TokenRecord"
+          },
+          {
+            "name": "MetadataDelegate"
+          }
+        ]
+      }
+    }
+  ]
+}

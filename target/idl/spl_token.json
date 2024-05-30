@@ -162,7 +162,7 @@
             ],
             "type": {
               "vec": {
-                "defined": "(String,String)"
+                "defined": "HashMap<String,String>"
               }
             }
           }
